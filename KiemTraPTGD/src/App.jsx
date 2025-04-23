@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ProductList from './pages/ProductList'
+import ProductList from './components/ProductList'
 
 function App() {
   const [count, setCount] = useState(0)

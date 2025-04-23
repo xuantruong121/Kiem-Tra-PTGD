@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ProductItem from './ProductItem';
 import { Container, Row, Col, Form, Button, Table, InputGroup } from 'react-bootstrap';
 
 const ProductList = () => {
@@ -43,7 +44,7 @@ const ProductList = () => {
             setProducts(JSON.parse(savedProducts));
         }
     }, []);
-    
+
     useEffect(() => {
         localStorage.setItem('products', JSON.stringify(products));
     }, [products]);
@@ -124,17 +125,7 @@ const ProductList = () => {
                 </thead>
                 <tbody>
                     {filteredProducts.map(product => (
-                        <tr key={product.id}>
-                            <td>{product.name}</td>
-                            <td>{product.price}</td>
-                            <td>{product.category}</td>
-                            <td>{product.stock}</td>
-                            <td>
-                                <Button variant="danger" onClick={() => handleDeleteProduct(product.id)}>
-                                    Xoá
-                                </Button>
-                            </td>
-                        </tr>
+                        <ProductItem key={product.id} product={product} onDelete={handleDeleteProduct} />
                     ))}
                 </tbody>
             </Table>
