@@ -34,6 +34,10 @@ const ProductList = () => {
         return matchesName && matchesCategory;
     });
 
+    const totalProducts = filteredProducts.length;
+    const totalStock = filteredProducts.reduce((sum, p) => sum + parseInt(p.stock), 0);
+
+
     return (
         <Container className="mt-4">
             <h2 className="mb-4">Danh sách sản phẩm</h2>
@@ -124,6 +128,9 @@ const ProductList = () => {
                     ))}
                 </tbody>
             </Table>
+            <p className="fw-bold">
+                Tổng sản phẩm: {totalProducts} | Tổng tồn kho: {totalStock}
+            </p>
         </Container>
     );
 };
