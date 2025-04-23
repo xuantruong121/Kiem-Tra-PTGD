@@ -10,20 +10,24 @@ const ProductList = () => {
 
     // Lấy danh sách từ localStorage khi load trang
     useEffect(() => {
-        const savedProducts = localStorage.getItem('products');
-        if (savedProducts) {
-            setProducts(JSON.parse(savedProducts));
-        } else {
-            // Nếu chưa có thì khởi tạo với 3 sản phẩm mẫu
-            const initialProducts = [
-                { id: 1, name: 'Sản phẩm 1', price: 100, category: 'Thời trang', stock: 10 },
-                { id: 2, name: 'Sản phẩm 2', price: 200, category: 'Công nghệ', stock: 20 },
-                { id: 3, name: 'Máy hút bụi', price: 500, category: 'Gia dụng', stock: 5 },
-            ];
-            setProducts(initialProducts);
-            localStorage.setItem('products', JSON.stringify(initialProducts));
+        try {
+            const savedProducts = localStorage.getItem('products');
+            if (savedProducts) {
+                setProducts(JSON.parse(savedProducts));
+            } else {
+                const initialProducts = [
+                    { id: 1, name: 'Sản phẩm 1', price: 100, category: 'Thời trang', stock: 10 },
+                    { id: 2, name: 'Sản phẩm 2', price: 200, category: 'Công nghệ', stock: 20 },
+                    { id: 3, name: 'Máy hút bụi', price: 500, category: 'Gia dụng', stock: 5 },
+                ];
+                setProducts(initialProducts);
+                localStorage.setItem('products', JSON.stringify(initialProducts));
+            }
+        } catch (error) {
+            console.error('Lỗi khi đọc dữ liệu từ localStorage:', error);
         }
     }, []);
+
 
     // Cập nhật localStorage mỗi khi danh sách thay đổi
     useEffect(() => {
