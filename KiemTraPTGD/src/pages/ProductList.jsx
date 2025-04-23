@@ -5,10 +5,12 @@ const ProductList = () => {
     const [products, setProducts] = useState([
         { id: 1, name: 'Sản phẩm 1', price: 100, category: 'Thời trang', stock: 10 },
         { id: 2, name: 'Sản phẩm 2', price: 200, category: 'Công nghệ', stock: 20 },
+        { id: 3, name: 'Máy hút bụi', price: 500, category: 'Gia dụng', stock: 5 },
     ]);
 
     const [newProduct, setNewProduct] = useState({ name: '', price: '', category: '', stock: '' });
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('Tất cả');
 
     const handleAddProduct = () => {
         setProducts([
@@ -25,23 +27,40 @@ const ProductList = () => {
         setProducts(products.filter(product => product.id !== id));
     };
 
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Lọc theo tên và danh mục
+    const filteredProducts = products.filter(product => {
+        const matchesName = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === 'Tất cả' || product.category === selectedCategory;
+        return matchesName && matchesCategory;
+    });
 
     return (
         <Container className="mt-4">
             <h2 className="mb-4">Danh sách sản phẩm</h2>
 
-            <InputGroup className="mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Tìm kiếm sản phẩm theo tên"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </InputGroup>
+            {/* Tìm kiếm và lọc danh mục */}
+            <Row className="mb-3">
+                <Col md={6}>
+                    <InputGroup>
+                        <Form.Control
+                            type="text"
+                            placeholder="Tìm kiếm sản phẩm theo tên"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </InputGroup>
+                </Col>
+                <Col md={6}>
+                    <Form.Select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                        <option value="Tất cả">Tất cả danh mục</option>
+                        <option value="Thời trang">Thời trang</option>
+                        <option value="Công nghệ">Công nghệ</option>
+                        <option value="Gia dụng">Gia dụng</option>
+                    </Form.Select>
+                </Col>
+            </Row>
 
+            {/* Form thêm sản phẩm */}
             <Row className="mb-4">
                 <Col md={3}>
                     <Form.Control
@@ -78,6 +97,7 @@ const ProductList = () => {
                 </Col>
             </Row>
 
+            {/* Danh sách sản phẩm */}
             <Table striped bordered hover>
                 <thead>
                     <tr>
