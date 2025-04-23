@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, InputGroup } from 'react-bootstrap';
 
 const ProductList = () => {
@@ -37,6 +37,16 @@ const ProductList = () => {
     const totalProducts = filteredProducts.length;
     const totalStock = filteredProducts.reduce((sum, p) => sum + parseInt(p.stock), 0);
 
+    useEffect(() => {
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) {
+            setProducts(JSON.parse(savedProducts));
+        }
+    }, []);
+    
+    useEffect(() => {
+        localStorage.setItem('products', JSON.stringify(products));
+    }, [products]);
 
     return (
         <Container className="mt-4">
