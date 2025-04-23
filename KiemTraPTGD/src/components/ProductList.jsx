@@ -3,24 +3,50 @@ import ProductItem from './ProductItem';
 import { Container, Row, Col, Form, Button, Table, InputGroup } from 'react-bootstrap';
 
 const ProductList = () => {
-    const [products, setProducts] = useState([
-        { id: 1, name: 'Sản phẩm 1', price: 100, category: 'Thời trang', stock: 10 },
-        { id: 2, name: 'Sản phẩm 2', price: 200, category: 'Công nghệ', stock: 20 },
-        { id: 3, name: 'Máy hút bụi', price: 500, category: 'Gia dụng', stock: 5 },
-    ]);
-
+    const [products, setProducts] = useState([]);
     const [newProduct, setNewProduct] = useState({ name: '', price: '', category: '', stock: '' });
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Tất cả');
 
+    // Lấy danh sách từ localStorage khi load trang
+    useEffect(() => {
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) {
+            setProducts(JSON.parse(savedProducts));
+        } else {
+            // Nếu chưa có thì khởi tạo với 3 sản phẩm mẫu
+            const initialProducts = [
+                { id: 1, name: 'Sản phẩm 1', price: 100, category: 'Thời trang', stock: 10 },
+                { id: 2, name: 'Sản phẩm 2', price: 200, category: 'Công nghệ', stock: 20 },
+                { id: 3, name: 'Máy hút bụi', price: 500, category: 'Gia dụng', stock: 5 },
+            ];
+            setProducts(initialProducts);
+            localStorage.setItem('products', JSON.stringify(initialProducts));
+        }
+    }, []);
+
+    // Cập nhật localStorage mỗi khi danh sách thay đổi
+    useEffect(() => {
+        localStorage.setItem('products', JSON.stringify(products));
+    }, [products]);
+
     const handleAddProduct = () => {
-        setProducts([
-            ...products,
-            {
-                id: products.length + 1,
-                ...newProduct,
-            },
-        ]);
+        if (!newProduct.name || !newProduct.price || !newProduct.category || !newProduct.stock) {
+            alert('Vui lòng điền đầy đủ thông tin sản phẩm');
+            return;
+        }
+
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+
+        const newProductData = {
+            id: newId,
+            name: newProduct.name,
+            price: parseFloat(newProduct.price),
+            category: newProduct.category,
+            stock: parseInt(newProduct.stock),
+        };
+
+        setProducts([...products, newProductData]);
         setNewProduct({ name: '', price: '', category: '', stock: '' });
     };
 
@@ -37,17 +63,6 @@ const ProductList = () => {
 
     const totalProducts = filteredProducts.length;
     const totalStock = filteredProducts.reduce((sum, p) => sum + parseInt(p.stock), 0);
-
-    useEffect(() => {
-        const savedProducts = localStorage.getItem('products');
-        if (savedProducts) {
-            setProducts(JSON.parse(savedProducts));
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('products', JSON.stringify(products));
-    }, [products]);
 
     return (
         <Container className="mt-4">
@@ -129,6 +144,7 @@ const ProductList = () => {
                     ))}
                 </tbody>
             </Table>
+
             <p className="fw-bold">
                 Tổng sản phẩm: {totalProducts} | Tổng tồn kho: {totalStock}
             </p>
